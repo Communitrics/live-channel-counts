@@ -190,16 +190,17 @@
     .welcome-screen button:hover {
       background-color: #555;
     }
-  </style>
+</style>
   <link rel="stylesheet" href="odometer-theme-minimal.css" />
   <script src="odometer.js"></script>
 </head>
 <body>
-    <div class="welcome-screen">
-        <h1>Communitrics Search</h1>
-        <h3 class="made-by">A subsidiary of <a href="https://discord.com/oauth2/authorize?client_id=1198800543448055928" target="_blank" style="text-decoration: none;"><strong>Communitrics</strong></a> | Made by <a href="https://twitter.com/charlieashfordd" target="_blank" style="text-decoration: none;"><strong>Charlie Ashford</strong></a></h3>
-        <h3 class="made-by">Use control or ⌘ + K to search.</strong></a></h3>
-      </div>
+  <div class="welcome-screen">
+      <h1>Communitrics Search</h1>
+      <h3 class="made-by">A subsidiary of <a href="https://discord.com/oauth2/authorize?client_id=1198800543448055928" target="_blank" style="text-decoration: none;"><strong>Communitrics</strong></a> | Made by <a href="https://twitter.com/charlieashfordd" target="_blank" style="text-decoration: none;"><strong>Charlie Ashford</strong></a></h3>
+      <h3 class="made-by">Use control or ⌘ + K to search.</strong></a></h3>
+      <button onclick="searchHome()">Search for a Channel</button>
+    </div>
 
   <a href="?" class="home-button">
     <i class="fas fa-home"></i> Home
@@ -333,6 +334,18 @@
         }
       }, duration / totalFrames);
     }
+
+    function searchHome() {
+      const prompt = window.prompt("Enter channel name, ID, or URL.");
+      if (prompt) {
+        fetch(`https://axern.space/api/search?platform=youtube&type=channel&query=${prompt}`)
+          .then((res) => res.json())
+          .then((data) => {
+            window.location.href = "?id=" + data[0].id;
+          });
+      }
+    }
+
 
     function search(event) {
       event.preventDefault();
