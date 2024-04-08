@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loading... Channel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/color-thief-browser@2.0.1/dist/color-thief.min.js"></script>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 200px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .channel-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .channel-header img {
+      border-radius: 50%;
+      margin-right: 15px;
+    }
+
+    .channel-header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .subscribers {
+      font-size: 30px;
+      color: #555;
+      text-align: center;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .api-data, .milestone-info {
+      font-size: 24px;
+      color: #555;
+      text-align: center;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    .progress-bar {
+      height: 20px;
+      background-color: #333;
+      border-radius: 8px;
+      transition: width 0.5s ease-in-out;
+      width: 0%; 
+    }
+
+    .welcome-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f2f2f2;
+    }
+
+    .welcome-screen h1 {
+      font-size: 48px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 0;
+    }
+
+    .welcome-screen h3 {
+      font-size: 24px;
+      font-weight: 400;
+      color: #555;
+      margin-bottom: 30px;
+    }
+
+    .welcome-screen button {
+      font-size: 18px;
+      padding: 12px 24px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .home-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      color: #333;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .home-button i {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <a href="?" class="home-button">
+    <i class="fas fa-home"></i> Home
+  </a>
+  <div class="welcome-screen">
+    <h1>Communitrics Search</h1>
+    <h3 class="made-by">A subsidiary of <a href="https://discord.com/oauth2/authorize?client_id=1198800543448055928" target="_blank" style="text-decoration: none;"><strong>Communitrics</strong></a> | Made by <a href="https://twitter.com/charlieashfordd" target="_blank" style="text-decoration: none;"><strong>Charlie Ashford</strong></a></h3>
+    <button onclick="search()">Search for a Channel</button>
+  </div>
+
+  <div class="container" style="display: none;">
+    <div class="channel-header">
+      <img src="https://yt3.ggpht.com/fxGKYucJAVme-Yz4fsdCroCFCrANWqw0ql4GYuvx8Uq4l_euNJHgE-w9MTkLQA805vWCi-kE0g=s176-c-k-c0x00ffffff-no-rj" width="176" height="176" alt="Profile Picture" id="avatar" />
+      <h1 id="name" onclick="search()">Loading...</h1>
+      
+    </div>
+    <p class="subscribers" id="subscriberCount">
+      <b>Estimated Subscribers:</b> <span id="odometer">Loading...</span>
+    </p>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="milestone-info" id="milestoneInfo">
+    </div>
+    <div class="api-data">
+      <p><b>Linear Estimated Count:</b> <span id="estSubCountLinear">Loading...</span></p>
+      <p><b>YouTube Shows:</b> <span id="apiSubCount">Loading...</span></p>
+      <p><b>View Count:</b> <span id="viewCount">Loading...</span></p>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id") ?? "";
+    const apiUrl = `https://nia-statistics.com/api/get?platform=youtube&type=channel&id=${id}`;
+    const odometerElement = document.getElementById("odometer");
+    const milestoneInfoElement = document.getElementById("milestoneInfo");
+    let currentCount = 0;
+    let targetCount = 0;
+    let updateIntervalId = null;
+
+    function calcNextGoal(subCount) {
+      let milestone;
+      if (subCount >= 100000000)
+        milestone = Math.floor(subCount / 1000000) * 1000000 + 1000000;
+      else if (subCount >= 10000000)
+        milestone = Math.floor(subCount / 100000) * 100000 + 100000;
+      else if (subCount >= 1000000)
+        milestone = Math.floor(subCount / 10000) * 10000 + 10000;
+      else if (subCount >= 100000)
+        milestone = Math.floor(subCount / 1000) * 1000 + 1000;
+      else if (subCount >= 10000)
+        milestone = Math.floor(subCount / 100) * 100 + 100;
+      else if (subCount >= 1000)
+        milestone = Math.floor(subCount / 10) * 10 + 10;
+      return milestone;
+    }
+
+    function updateProgressBar(current) {
+      const nextGoal = calcNextGoal(current);
+      const subsNeeded = nextGoal - current;
+      milestoneInfoElement.textContent = `Subscribers needed until ${nextGoal.toLocaleString()}: ${Math.round(subsNeeded).toLocaleString()}`;
+      
+      let previousGoal = nextGoal;
+
+      if (current >= 100000000)
+        previousGoal -= 1000000;
+      else if (current >= 10000000)
+        previousGoal -= 100000;
+      else if (current >= 1000000)
+        previousGoal -= 10000;
+      else if (current >= 100000)
+        previousGoal -= 1000;
+      else if (current >= 10000)
+        previousGoal -= 100;
+      else if (current >= 1000)
+        previousGoal -= 10;
+
+      const progress = ((current - previousGoal) / (nextGoal - previousGoal)) * 100;
+      document.getElementById('progressBar').style.width = `${progress.toFixed(2)}%`;
+    }
+
+    function updateSubscriberCount() {
+      fetch(apiUrl)
+        .then((response) => response.json())
+        .then((data) => {
+          targetCount = data.estSubCount;
+          const img = document.getElementById("avatar");
+          const colorThief = new ColorThief();
+
+          img.crossOrigin = 'anonymous';
+          img.src = data.snippet.thumbnails[2]?.url || data.snippet.thumbnails[1]?.url || data.snippet.thumbnails[0]?.url;
+
+          img.addEventListener('load', function() {
+            const color = colorThief.getColor(img);
+            document.getElementById('progressBar').style.backgroundColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+            updateProgressBar(currentCount, targetCount);
+          });
+
+          document.getElementById("name").textContent = data.snippet.title;
+          document.title = `${data.snippet.title} Channel`;
+          animateCount();
+          document.getElementById("estSubCountLinear").textContent = data.estSubCount_linear.toLocaleString();
+          document.getElementById("apiSubCount").textContent = data.apiSubCount.toLocaleString();
+          document.getElementById("viewCount").textContent = data.apiViewCount.toLocaleString();
+        })
+        .catch((error) => {
+          console.error("Error fetching subscriber count:", error);
+        });
+    }
+
+    function animateCount() {
+      const difference = targetCount - currentCount;
+      const duration = 3100;
+      const framesPerSecond = 60;
+      const totalFrames = (duration / 1000) * framesPerSecond;
+      const step = difference / totalFrames;
+
+      let frame = 0;
+      const animationInterval = setInterval(() => {
+        const newCount = currentCount + step;
+        currentCount = Math.min(newCount, targetCount);
+        odometerElement.innerText = Math.round(currentCount).toLocaleString();
+
+        frame++;
+        if (frame >= totalFrames) {
+          clearInterval(animationInterval);
+          currentCount = targetCount;
+          odometerElement.innerText = targetCount.toLocaleString();
+        }
+      }, duration / totalFrames);
+    }
+
+    function search() {
+      const prompt = window.prompt("Enter channel name, ID, or URL.");
+      if (prompt) {
+        fetch(`https://axern.space/api/search?platform=youtube&type=channel&query=${prompt}`)
+          .then((res) => res.json())
+          .then((data) => {
+            window.location.href = "?id=" + data[0].id;
+          });
+      }
+    }
+
+    function startUpdatingSubscriberCount() {
+      updateSubscriberCount();
+      updateIntervalId = setInterval(updateSubscriberCount, 3200);
+    }
+
+    startUpdatingSubscriberCount();
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        startUpdatingSubscriberCount();
+      } else {
+        clearInterval(updateIntervalId);
+      }
+    });
+
+    if (id !== "") {
+      document.querySelector(".welcome-screen").style.display = "none";
+      document.querySelector(".container").style.display = "block";
+    }
+  </script>
+</body>
+</html>
