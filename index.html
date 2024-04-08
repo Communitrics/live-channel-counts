@@ -1,38 +1,42 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Loading... Channel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <title>Communitrics Search</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/color-thief-browser@2.0.1/dist/color-thief.min.js"></script>
   <style>
     body {
-      font-family: "Poppins", sans-serif;
+      font-family: 'Inter', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f2f2f2;
+      background-color: #f5f5f5;
+    }
+
+    .odometer {
+      font-family: 'Inter', sans-serif;
     }
 
     .container {
       max-width: 800px;
-      margin: 200px auto;
+      margin: 100px auto;
       background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .channel-header {
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
 
     .channel-header img {
       border-radius: 50%;
-      margin-right: 15px;
+      margin-right: 20px;
     }
 
     .channel-header h1 {
@@ -42,10 +46,10 @@
     }
 
     .subscribers {
-      font-size: 30px;
+      font-size: 32px;
       color: #555;
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
       overflow: hidden;
     }
 
@@ -53,60 +57,27 @@
       font-size: 24px;
       color: #555;
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
       overflow: hidden;
     }
 
     .progress-bar-container {
       width: 100%;
-      background-color: #ddd;
-      border-radius: 8px;
-      margin: 10px 0;
+      background-color: #e6e6e6;
+      border-radius: 12px;
+      margin: 20px 0;
     }
 
     .progress-bar {
-      height: 20px;
+      height: 24px;
       background-color: #333;
-      border-radius: 8px;
+      border-radius: 12px;
       transition: width 0.5s ease-in-out;
-      width: 0%; 
-    }
-
-    .welcome-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background-color: #f2f2f2;
-    }
-
-    .welcome-screen h1 {
-      font-size: 48px;
-      font-weight: 700;
-      color: #333;
-      margin-bottom: 0;
-    }
-
-    .welcome-screen h3 {
-      font-size: 24px;
-      font-weight: 400;
-      color: #555;
-      margin-bottom: 30px;
-    }
-
-    .welcome-screen button {
-      font-size: 18px;
-      padding: 12px 24px;
-      background-color: #333;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+      width: 0%;
     }
 
     .home-button {
-      position: absolute;
+      position: fixed;
       top: 20px;
       left: 20px;
       font-size: 24px;
@@ -117,38 +88,148 @@
     }
 
     .home-button i {
-      margin-right: 5px;
+      margin-right: 8px;
+    }
+
+    .search-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .search-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .search-form {
+      background-color: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 500px;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-form input {
+      flex-grow: 1;
+      padding: 12px 16px;
+      font-size: 18px;
+      border: none;
+      border-bottom: 2px solid #ccc;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .search-form input:focus {
+      border-color: #333;
+    }
+
+    .search-form button {
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-left: 20px;
+      transition: background-color 0.3s;
+    }
+
+    .search-form button:hover {
+      background-color: #555;
+    }
+
+    .welcome-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    .welcome-screen h1 {
+      font-size: 48px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .welcome-screen h3 {
+      font-size: 24px;
+      font-weight: 400;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .welcome-screen button {
+      font-size: 18px;
+      padding: 12px 24px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .welcome-screen button:hover {
+      background-color: #555;
     }
   </style>
+  <link rel="stylesheet" href="odometer-theme-minimal.css" />
+  <script src="odometer.js"></script>
 </head>
 <body>
+    <div class="welcome-screen">
+        <h1>Communitrics Search</h1>
+        <h3 class="made-by">A subsidiary of <a href="https://discord.com/oauth2/authorize?client_id=1198800543448055928" target="_blank" style="text-decoration: none;"><strong>Communitrics</strong></a> | Made by <a href="https://twitter.com/charlieashfordd" target="_blank" style="text-decoration: none;"><strong>Charlie Ashford</strong></a></h3>
+        <h3 class="made-by">Use control or ⌘ + K to search.</strong></a></h3>
+      </div>
+
   <a href="?" class="home-button">
     <i class="fas fa-home"></i> Home
   </a>
-  <div class="welcome-screen">
-    <h1>Communitrics Search</h1>
-    <h3 class="made-by">A subsidiary of <a href="https://discord.com/oauth2/authorize?client_id=1198800543448055928" target="_blank" style="text-decoration: none;"><strong>Communitrics</strong></a> | Made by <a href="https://twitter.com/charlieashfordd" target="_blank" style="text-decoration: none;"><strong>Charlie Ashford</strong></a></h3>
-    <button onclick="search()">Search for a Channel</button>
+
+  <div class="search-overlay">
+    <form class="search-form" onsubmit="search(event)">
+      <input type="text" id="searchInput" placeholder="Enter channel name, ID, or URL" />
+      <button type="submit">Search</button>
+    </form>
   </div>
 
   <div class="container" style="display: none;">
     <div class="channel-header">
-      <img src="https://yt3.ggpht.com/fxGKYucJAVme-Yz4fsdCroCFCrANWqw0ql4GYuvx8Uq4l_euNJHgE-w9MTkLQA805vWCi-kE0g=s176-c-k-c0x00ffffff-no-rj" width="176" height="176" alt="Profile Picture" id="avatar" />
-      <h1 id="name" onclick="search()">Loading...</h1>
-      
+      <img src="https://yt3.googleusercontent.com/aV7UujeJUQRd-S_JgbfoJSouMdsrM4y9W5Ok3A63ECMwYTVkn1-88G1aRR_cYhj799wMAHpW8g=s160-c-k-c0x00ffffff-no-rj" width="176" height="176" alt="Profile Picture" id="avatar" />
+      <h1 id="name">Loading...</h1>
     </div>
     <p class="subscribers" id="subscriberCount">
-      <b>Estimated Subscribers:</b> <span id="odometer">Loading...</span>
+      <b>Estimated Subscribers:</b> <span id="estSubCount" class="odometer">Loading...</span>
     </p>
     <div class="progress-bar-container">
       <div class="progress-bar" id="progressBar"></div>
     </div>
     <div class="milestone-info" id="milestoneInfo">
+      Subscribers needed until <span id="nextGoal">0</span>: <span id="subsNeeded" class="odometer">Loading...</span>
     </div>
     <div class="api-data">
-      <p><b>Linear Estimated Count:</b> <span id="estSubCountLinear">Loading...</span></p>
-      <p><b>YouTube Shows:</b> <span id="apiSubCount">Loading...</span></p>
-      <p><b>View Count:</b> <span id="viewCount">Loading...</span></p>
+      <p><b>Linear Estimated Count:</b> <span id="estSubCountLinear" class="odometer">Loading...</span></p>
+      <p><b>YouTube Shows:</b> <span id="apiSubCount" class="odometer">Loading...</span></p>
+      <p><b>View Count:</b> <span id="viewCount" class="odometer">Loading...</span></p>
     </div>
   </div>
 
@@ -156,8 +237,6 @@
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id") ?? "";
     const apiUrl = `https://nia-statistics.com/api/get?platform=youtube&type=channel&id=${id}`;
-    const odometerElement = document.getElementById("odometer");
-    const milestoneInfoElement = document.getElementById("milestoneInfo");
     let currentCount = 0;
     let targetCount = 0;
     let updateIntervalId = null;
@@ -182,7 +261,8 @@
     function updateProgressBar(current) {
       const nextGoal = calcNextGoal(current);
       const subsNeeded = nextGoal - current;
-      milestoneInfoElement.textContent = `Subscribers needed until ${nextGoal.toLocaleString()}: ${Math.round(subsNeeded).toLocaleString()}`;
+      document.getElementById("nextGoal").innerText = nextGoal.toLocaleString();
+      document.getElementById("subsNeeded").innerText = subsNeeded;
       
       let previousGoal = nextGoal;
 
@@ -217,15 +297,15 @@
           img.addEventListener('load', function() {
             const color = colorThief.getColor(img);
             document.getElementById('progressBar').style.backgroundColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
-            updateProgressBar(currentCount, targetCount);
+            updateProgressBar(data.estSubCount);
           });
 
           document.getElementById("name").textContent = data.snippet.title;
           document.title = `${data.snippet.title} Channel`;
-          animateCount();
-          document.getElementById("estSubCountLinear").textContent = data.estSubCount_linear.toLocaleString();
-          document.getElementById("apiSubCount").textContent = data.apiSubCount.toLocaleString();
-          document.getElementById("viewCount").textContent = data.apiViewCount.toLocaleString();
+          document.getElementById("estSubCount").textContent = targetCount;
+          document.getElementById("estSubCountLinear").textContent = data.estSubCount_linear;
+          document.getElementById("apiSubCount").textContent = data.apiSubCount;
+          document.getElementById("viewCount").textContent = data.apiViewCount;
         })
         .catch((error) => {
           console.error("Error fetching subscriber count:", error);
@@ -234,7 +314,7 @@
 
     function animateCount() {
       const difference = targetCount - currentCount;
-      const duration = 3100;
+      const duration = 2000;
       const framesPerSecond = 60;
       const totalFrames = (duration / 1000) * framesPerSecond;
       const step = difference / totalFrames;
@@ -254,8 +334,9 @@
       }, duration / totalFrames);
     }
 
-    function search() {
-      const prompt = window.prompt("Enter channel name, ID, or URL.");
+    function search(event) {
+      event.preventDefault();
+      const prompt = document.getElementById("searchInput").value;
       if (prompt) {
         fetch(`https://axern.space/api/search?platform=youtube&type=channel&query=${prompt}`)
           .then((res) => res.json())
@@ -263,11 +344,38 @@
             window.location.href = "?id=" + data[0].id;
           });
       }
+      hideSearchOverlay();
     }
+
+    function showSearchOverlay() {
+      const searchOverlay = document.querySelector(".search-overlay");
+      searchOverlay.classList.add("visible");
+      document.getElementById("searchInput").focus();
+    }
+
+    function hideSearchOverlay() {
+      const searchOverlay = document.querySelector(".search-overlay");
+      searchOverlay.classList.remove("visible");
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "k") {
+        event.preventDefault();
+        showSearchOverlay();
+      } else if (event.key === "Escape") {
+        hideSearchOverlay();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (event.target.closest(".search-overlay") === null) {
+        hideSearchOverlay();
+      }
+    });
 
     function startUpdatingSubscriberCount() {
       updateSubscriberCount();
-      updateIntervalId = setInterval(updateSubscriberCount, 3200);
+      updateIntervalId = setInterval(updateSubscriberCount, 2000);
     }
 
     startUpdatingSubscriberCount();
