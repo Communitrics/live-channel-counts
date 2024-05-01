@@ -7,189 +7,207 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/color-thief-browser@2.0.1/dist/color-thief.min.js"></script>
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
-    }
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+}
 
-    .odometer {
-      font-family: 'Inter', sans-serif;
-    }
+.welcome-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
 
-    .container {
-      max-width: 800px;
-      margin: 100px auto;
-      background-color: #fff;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+.welcome-screen h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
 
-    .channel-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 30px;
-    }
+.welcome-screen h3 {
+  font-size: 24px;
+  font-weight: 400;
+  color: #555;
+  margin-bottom: 10px;
+}
 
-    .channel-header img {
-      border-radius: 50%;
-      margin-right: 20px;
-    }
+.welcome-screen button {
+  font-size: 18px;
+  padding: 12px 24px;
+  background-color: #007aff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
-    .channel-header h1 {
-      font-size: 36px;
-      font-weight: 700;
-      color: #333;
-    }
+.welcome-screen button:hover {
+  background-color: #0059b2;
+}
 
-    .subscribers {
-      font-size: 32px;
-      color: #555;
-      text-align: center;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
+.search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
 
-    .api-data, .milestone-info {
-      font-size: 24px;
-      color: #555;
-      text-align: center;
-      margin-bottom: 40px;
-      overflow: hidden;
-    }
+.search-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
 
-    .progress-bar-container {
-      width: 100%;
-      background-color: #e6e6e6;
-      border-radius: 12px;
-      margin: 20px 0;
-    }
+.search-form {
+  background-color: #fff;
+  padding: 12px 16px;
+  border-radius: 100px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 600px;
+  display: flex;
+  align-items: center;
+}
 
-    .progress-bar {
-      height: 24px;
-      background-color: #333;
-      border-radius: 12px;
-      transition: width 0.5s ease-in-out;
-      width: 0%;
-    }
+.search-form input {
+  flex-grow: 1;
+  padding: 8px 16px;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  transition: box-shadow 0.3s;
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+}
 
-    .home-button {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      font-size: 24px;
-      color: #333;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-    }
+.search-form input:focus {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-    .home-button i {
-      margin-right: 8px;
-    }
+.search-form button {
+  background-color: transparent;
+  color: #555;
+  border: none;
+  padding: 8px 16px;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: color 0.3s;
+  font-family: 'Poppins', sans-serif;
+}
 
-    .search-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s, visibility 0.3s;
-    }
+.search-form button:hover {
+  color: #333;
+}
 
-    .search-overlay.visible {
-      opacity: 1;
-      visibility: visible;
-    }
+.close-button {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  font-size: 24px;
+  color: #333;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
 
-    .search-form {
-      background-color: #fff;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      width: 500px;
-      display: flex;
-      align-items: center;
-    }
+.close-button:hover {
+  color: #555;
+}
 
-    .search-form input {
-      flex-grow: 1;
-      padding: 12px 16px;
-      font-size: 18px;
-      border: none;
-      border-bottom: 2px solid #ccc;
-      outline: none;
-      transition: border-color 0.3s;
-    }
+.home-button {
+  position: fixed;
+  top: 32px;
+  left: 32px;
+  font-size: 24px;
+  color: #000000;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s;
+}
 
-    .search-form input:focus {
-      border-color: #333;
-    }
+.home-button:hover {
+  color: #000000;
+}
 
-    .search-form button {
-      background-color: #333;
-      color: #fff;
-      border: none;
-      padding: 12px 24px;
-      font-size: 18px;
-      font-weight: 500;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-left: 20px;
-      transition: background-color 0.3s;
-    }
+.home-button i {
+  margin-right: 8px;
+}
 
-    .search-form button:hover {
-      background-color: #555;
-    }
+.container {
+  max-width: 800px;
+  margin: 100px auto;
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
 
-    .welcome-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background-color: #f5f5f5;
-    }
+.channel-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
 
-    .welcome-screen h1 {
-      font-size: 48px;
-      font-weight: 700;
-      color: #333;
-      margin-bottom: 20px;
-    }
+.channel-header img {
+  border-radius: 50%;
+  margin-right: 20px;
+}
 
-    .welcome-screen h3 {
-      font-size: 24px;
-      font-weight: 400;
-      color: #555;
-      margin-bottom: 10px;
-    }
+.channel-header h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #333;
+}
 
-    .welcome-screen button {
-      font-size: 18px;
-      padding: 12px 24px;
-      background-color: #333;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
+.subscribers {
+  font-size: 32px;
+  color: #555;
+  text-align: center;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
 
-    .welcome-screen button:hover {
-      background-color: #555;
-    }
+.api-data, .milestone-info {
+  font-size: 24px;
+  color: #555;
+  text-align: center;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.progress-bar-container {
+  width: 100%;
+  background-color: #e6e6e6;
+  border-radius: 16px;
+  margin: 20px 0;
+}
+
+.progress-bar {
+  height: 24px;
+  background-color: #007aff;
+  border-radius: 16px;
+  transition: width 0.5s ease-in-out;
+  width: 0%;
+}
 </style>
   <link rel="stylesheet" href="odometer-theme-minimal.css" />
   <script src="odometer.js"></script>
@@ -197,8 +215,9 @@
 <body>
   <div class="welcome-screen">
       <h1>Communitrics Search</h1>
-      <h3 class="made-by">A subsidiary of <a href="https://discord.com/oauth2/authorize?client_id=1198800543448055928" target="_blank" style="text-decoration: none;"><strong>Communitrics</strong></a> | Made by <a href="https://twitter.com/charlieashfordd" target="_blank" style="text-decoration: none;"><strong>Charlie Ashford</strong></a></h3>
+      <h3 class="made-by">A subsidiary of <a href="https://communitrics.com/invite" target="_blank" style="text-decoration: none;"><strong>Communitrics</strong></a> | Made by <a href="https://twitter.com/charlieashfordd" target="_blank" style="text-decoration: none;"><strong>Charlie Ashford</strong></a></h3>
       <h3 class="made-by">Use control or ⌘ + K to search.</strong></a></h3>
+      <h4 class="made-by">Note: Linear counts are currently slightly inaccurate, we are working on fixing this.</h4>
       <button onclick="searchHome()">Search for a Channel</button>
     </div>
 
@@ -228,16 +247,15 @@
       Subscribers needed until <span id="nextGoal">0</span>: <span id="subsNeeded" class="odometer">Loading...</span>
     </div>
     <div class="api-data">
-      <p><b>Linear Estimated Count:</b> <span id="estSubCountLinear" class="odometer">Loading...</span></p>
       <p><b>YouTube Shows:</b> <span id="apiSubCount" class="odometer">Loading...</span></p>
-      <p><b>View Count:</b> <span id="viewCount" class="odometer">Loading...</span></p>
+      <p><b>View Count:</b> <span id="estViewCount" class="odometer">Loading...</span></p>
     </div>
   </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id") ?? "";
-    const apiUrl = `https://nia-statistics.com/api/get?platform=youtube&type=channel&id=${id}`;
+    const apiUrl = `https://api.communitrics.com/${id}?david=true`;
     let currentCount = 0;
     let targetCount = 0;
     let updateIntervalId = null;
@@ -285,34 +303,61 @@
     }
 
     function updateSubscriberCount() {
-      fetch(apiUrl)
-        .then((response) => response.json())
-        .then((data) => {
-          targetCount = data.estSubCount;
+      fetch(`https://api.communitrics.com/${id}?david=true`)
+    .then(response => response.json())
+    .then(communitricsData => {
+      if (!communitricsData || !communitricsData.channelDetails) throw new Error("Invalid Communitrics API response");
+
+      fetch(`https://nia-statistics.com/api/get?platform=youtube&type=channel&id=${id}`)
+        .then(response => response.json())
+        .then(niaData => {
+          if (!niaData || !niaData.estViewCount) throw new Error("Invalid NIA API response");
+
+          const channelDetails = communitricsData.channelDetails;
           const img = document.getElementById("avatar");
-          const colorThief = new ColorThief();
-
+          img.src = channelDetails.profilePicture;
           img.crossOrigin = 'anonymous';
-          img.src = data.snippet.thumbnails[2]?.url || data.snippet.thumbnails[1]?.url || data.snippet.thumbnails[0]?.url;
+          img.onload = () => {
+            try {
+              const colorThief = new ColorThief();
+              const palette = colorThief.getPalette(img, 20);
+              const vibrantColor = getMostVibrantColor(palette);
+              document.getElementById('progressBar').style.backgroundColor = `rgb(${vibrantColor[0]}, ${vibrantColor[1]}, ${vibrantColor[2]})`;
+              updateProgressBar(channelDetails.linearEstSubscriberCount);
+            } catch (error) {
+              console.error("Error extracting color:", error);
+            }
+          };
 
-          img.addEventListener('load', function() {
-            const color = colorThief.getColor(img);
-            document.getElementById('progressBar').style.backgroundColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
-            updateProgressBar(data.estSubCount);
-          });
+          img.onerror = () => {
+            console.error("Error loading image");
+          };
 
-          document.getElementById("name").textContent = data.snippet.title;
-          document.title = `${data.snippet.title} Channel`;
-          document.getElementById("estSubCount").textContent = targetCount;
-          document.getElementById("estSubCountLinear").textContent = data.estSubCount_linear;
-          document.getElementById("apiSubCount").textContent = data.apiSubCount;
-          document.getElementById("viewCount").textContent = data.apiViewCount;
+          document.getElementById("name").textContent = channelDetails.name;
+          document.title = `${channelDetails.name} Channel`;
+          document.getElementById("estSubCount").textContent = channelDetails.linearEstSubscriberCount.toLocaleString();
+          document.getElementById("apiSubCount").textContent = channelDetails.subscriberCount.toLocaleString();
+          document.getElementById("estViewCount").textContent = niaData.estViewCount.toLocaleString();
         })
-        .catch((error) => {
-          console.error("Error fetching subscriber count:", error);
+        .catch(error => {
+          console.error("Error fetching view count from NIA:", error);
         });
-    }
+    })
+    .catch(error => {
+      console.error("Error fetching subscriber count from Communitrics:", error);
+    });
+}
+function getVibrancy(rgb) {
+  const max = Math.max(rgb[0], rgb[1], rgb[2]);
+  const min = Math.min(rgb[0], rgb[1], rgb[2]);
+  const saturation = max - min;
+  const brightness = 0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]; 
+  return saturation * brightness; 
+}
 
+function getMostVibrantColor(palette) {
+  return palette.reduce((mostVibrant, color) => getVibrancy(color) > getVibrancy(mostVibrant) ? color : mostVibrant);
+}
     function animateCount() {
       const difference = targetCount - currentCount;
       const duration = 2000;
@@ -345,7 +390,6 @@
           });
       }
     }
-
 
     function search(event) {
       event.preventDefault();
