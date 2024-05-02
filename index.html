@@ -151,6 +151,15 @@ body {
   margin-right: 8px;
 }
 
+#channelLink {
+  text-decoration: none;
+  color: inherit; 
+}
+
+#channelLink:hover {
+  cursor: pointer; 
+}
+
 .container {
   max-width: 800px;
   margin: 100px auto;
@@ -216,8 +225,7 @@ body {
   <div class="welcome-screen">
       <h1>Communitrics Search</h1>
       <h3 class="made-by">A subsidiary of <a href="https://communitrics.com/invite" target="_blank" style="text-decoration: none;"><strong>Communitrics</strong></a> | Made by <a href="https://twitter.com/charlieashfordd" target="_blank" style="text-decoration: none;"><strong>Charlie Ashford</strong></a></h3>
-      <h3 class="made-by">Use control or ⌘ + K to search.</strong></a></h3>
-      <h4 class="made-by">Note: Linear counts are currently slightly inaccurate, we are working on fixing this.</h4>
+      <h3 class="made-by"><b>Use control or ⌘ + K to search.</b><p></a></h3>
       <button onclick="searchHome()">Search for a Channel</button>
     </div>
 
@@ -235,8 +243,11 @@ body {
   <div class="container" style="display: none;">
     <div class="channel-header">
       <img src="https://yt3.googleusercontent.com/aV7UujeJUQRd-S_JgbfoJSouMdsrM4y9W5Ok3A63ECMwYTVkn1-88G1aRR_cYhj799wMAHpW8g=s160-c-k-c0x00ffffff-no-rj" width="176" height="176" alt="Profile Picture" id="avatar" />
+      <a href="#" id="channelLink" style="text-decoration: none; color: inherit;">
       <h1 id="name">Loading...</h1>
+      </a>
     </div>
+
     <p class="subscribers" id="subscriberCount">
       <b>Estimated Subscribers:</b> <span id="estSubCount" class="odometer">Loading...</span>
     </p>
@@ -255,7 +266,7 @@ body {
   <script>
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id") ?? "";
-    const apiUrl = `https://api.communitrics.com/${id}?david=true`;
+    const apiUrl = `https://nia-statistics.com/api/get?platform=youtube&type=channel&id=${id}`;
     let currentCount = 0;
     let targetCount = 0;
     let updateIntervalId = null;
@@ -274,8 +285,10 @@ body {
         milestone = Math.floor(subCount / 100) * 100 + 100;
       else if (subCount >= 1000)
         milestone = Math.floor(subCount / 10) * 10 + 10;
+      else
+        milestone = 1000;
       return milestone;
-    }
+}
 
     function updateProgressBar(current) {
       const nextGoal = calcNextGoal(current);
@@ -294,57 +307,51 @@ body {
       else if (current >= 100000)
         previousGoal -= 1000;
       else if (current >= 10000)
-        previousGoal -= 100;
+        previousGoal = nextGoal - 100;
       else if (current >= 1000)
-        previousGoal -= 10;
+        previousGoal = nextGoal - 10;
+      else
+        previousGoal = 0;  
 
-      const progress = ((current - previousGoal) / (nextGoal - previousGoal)) * 100;
-      document.getElementById('progressBar').style.width = `${progress.toFixed(2)}%`;
+    const progress = ((current - previousGoal) / (nextGoal - previousGoal)) * 100;
+    document.getElementById('progressBar').style.width = `${progress.toFixed(2)}%`;
     }
 
-    function updateSubscriberCount() {
-      fetch(`https://api.communitrics.com/${id}?david=true`)
-    .then(response => response.json())
-    .then(communitricsData => {
-      if (!communitricsData || !communitricsData.channelDetails) throw new Error("Invalid Communitrics API response");
+function updateSubscriberCount() {
+  fetch(apiUrl)
+    .then((response) => response.json())
+    .then((data) => {
+      targetCount = data.estSubCount;
 
-      fetch(`https://nia-statistics.com/api/get?platform=youtube&type=channel&id=${id}`)
-        .then(response => response.json())
-        .then(niaData => {
-          if (!niaData || !niaData.estViewCount) throw new Error("Invalid NIA API response");
+      const img = document.getElementById("avatar");
+      img.crossOrigin = 'anonymous';
+      img.src = data.snippet.thumbnails[2]?.url || data.snippet.thumbnails[1]?.url || data.snippet.thumbnails[0]?.url;
+      
+      img.onload = () => {
+        try {
+          const colorThief = new ColorThief();
+          const palette = colorThief.getPalette(img, 20);
+          const vibrantColor = getMostVibrantColor(palette);
+          document.getElementById('progressBar').style.backgroundColor = `rgb(${vibrantColor[0]}, ${vibrantColor[1]}, ${vibrantColor[2]})`;
+          updateProgressBar(data.estSubCount);
+        } catch (error) {
+          console.error("Error extracting color:", error);
+        }
+      };
 
-          const channelDetails = communitricsData.channelDetails;
-          const img = document.getElementById("avatar");
-          img.src = channelDetails.profilePicture;
-          img.crossOrigin = 'anonymous';
-          img.onload = () => {
-            try {
-              const colorThief = new ColorThief();
-              const palette = colorThief.getPalette(img, 20);
-              const vibrantColor = getMostVibrantColor(palette);
-              document.getElementById('progressBar').style.backgroundColor = `rgb(${vibrantColor[0]}, ${vibrantColor[1]}, ${vibrantColor[2]})`;
-              updateProgressBar(channelDetails.linearEstSubscriberCount);
-            } catch (error) {
-              console.error("Error extracting color:", error);
-            }
-          };
+      img.onerror = () => {
+        console.error("Error loading image");
+      };
 
-          img.onerror = () => {
-            console.error("Error loading image");
-          };
-
-          document.getElementById("name").textContent = channelDetails.name;
-          document.title = `${channelDetails.name} Channel`;
-          document.getElementById("estSubCount").textContent = channelDetails.linearEstSubscriberCount.toLocaleString();
-          document.getElementById("apiSubCount").textContent = channelDetails.subscriberCount.toLocaleString();
-          document.getElementById("estViewCount").textContent = niaData.estViewCount.toLocaleString();
-        })
-        .catch(error => {
-          console.error("Error fetching view count from NIA:", error);
-        });
+      document.getElementById("name").textContent = data.snippet.title;
+      document.getElementById("channelLink").href = `https://youtube.com/${data.snippet.handle}`;
+      document.title = `${data.snippet.title} Subscribers - Communitrics Search`;
+      document.getElementById("estSubCount").textContent = targetCount;
+      document.getElementById("apiSubCount").textContent = data.apiSubCount;
+      document.getElementById("estViewCount").textContent = data.estViewCount.toLocaleString();
     })
     .catch(error => {
-      console.error("Error fetching subscriber count from Communitrics:", error);
+      console.error("Error fetching view count from NIA:", error);
     });
 }
 function getVibrancy(rgb) {
