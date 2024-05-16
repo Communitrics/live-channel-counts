@@ -321,7 +321,8 @@ function updateSubscriberCount() {
   fetch(apiUrl)
     .then((response) => response.json())
     .then((data) => {
-      targetCount = data.estSubCount;
+      const channelId = data.snippet.channelId;
+      targetCount = channelId === "UCX6OQ3DkcsbYNE6H8uQQuVA" ? data.realEstCount : data.estSubCount;
 
       const img = document.getElementById("avatar");
       img.crossOrigin = 'anonymous';
@@ -333,7 +334,7 @@ function updateSubscriberCount() {
           const palette = colorThief.getPalette(img, 20);
           const vibrantColor = getMostVibrantColor(palette);
           document.getElementById('progressBar').style.backgroundColor = `rgb(${vibrantColor[0]}, ${vibrantColor[1]}, ${vibrantColor[2]})`;
-          updateProgressBar(data.estSubCount);
+          updateProgressBar(targetCount);
         } catch (error) {
           console.error("Error extracting color:", error);
         }
