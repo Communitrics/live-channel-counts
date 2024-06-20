@@ -266,7 +266,7 @@ body {
   <script>
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id") ?? "";
-    const apiUrl = `https://nia-statistics.com/api/get?platform=youtube&type=channel&id={id}`;
+    const apiUrl = `https://nia-statistics.com/api/get?platform=youtube&type=channel&id=${id}`;
     let currentCount = 0;
     let targetCount = 0;
     let updateIntervalId = null;
