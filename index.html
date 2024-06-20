@@ -330,7 +330,7 @@ function updateSubscriberCount() {
 
       const img = document.getElementById("avatar");
       img.crossOrigin = 'anonymous';
-      img.src = data.snippet.thumbnails[2]?.url || data.snippet.thumbnails[1]?.url || data.snippet.thumbnails[0]?.url;
+      img.src = data.snippet.thumbnails.high.url || data.snippet.thumbnails.medium.url || data.snippet.thumbnails.default.url;
       
       img.onload = () => {
         try {
